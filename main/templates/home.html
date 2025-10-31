@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JoTravels UK – Reliable & Affordable Airport Transfers</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)),
+        url("{% static 'images/nottingham_city.jpeg' %}") no-repeat center
+          center/cover;
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      background-attachment: fixed;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 12px 0;
+    }
+    .navbar {
+    background: rgba(0, 0, 0, 0.85);
+    padding: 12px 30px;
+}
+
+.navbar .nav-link {
+    color: white !important;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #FFD700 !important; /* gold hover */
+}
+
+.navbar .nav-link.text-warning {
+    color: #FFD700 !important; /* make Reviews gold */
+}
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.6rem;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    /* Hero section */
+    .hero {
+      padding: 130px 20px 70px;
+    }
+    .hero h1 {
+      font-weight: 700;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    /* WhatsApp button */
+    .whatsapp-btn {
+      background-color: #25d366;
+      border: none;
+      color: white;
+      padding: 15px 28px;
+      font-size: 18px;
+      border-radius: 8px;
+      transition: 0.3s;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    }
+    .whatsapp-btn:hover {
+      background-color: #1ebe57;
+      transform: scale(1.05);
+    }
+
+    /* Fleet section */
+    .fleet-section {
+      background: rgba(255, 255, 255, 0.93);
+      color: black;
+      padding: 70px 30px;
+      border-radius: 16px;
+      margin: 40px auto;
+      width: 88%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .fleet-img {
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.4s ease-in-out;
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      opacity: 0;
+      animation: fadeIn 1.2s ease-in forwards;
+    }
+    .fleet-img:hover {
+      transform: scale(1.07);
+    }
+    .fleet-caption {
+      margin-top: 10px;
+      font-weight: 600;
+      color: #222;
+      font-size: 1.05rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Feedback section */
+    .feedback-section {
+      background-color: rgba(255, 255, 255, 0.9);
+      color: black;
+      padding: 60px 20px;
+      border-radius: 14px;
+      margin: 40px auto;
+      width: 85%;
+    }
+    .feedback {
+      font-style: italic;
+      color: #444;
+      margin-right: 25px;
+    }
+
+    footer {
+      background: #001f3f;
+      color: white;
+      padding: 18px 0;
+      margin-top: 40px;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark fixed-top">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a class="navbar-brand text-white fw-bold" href="#">🚖 JoTravels UK</a>
+        <ul class="nav mb-0">
+            <li class="nav-item"><a href="{% url 'about' %}" class="text-white me-3">About</a></li>
+            <li class="nav-item"><a href="{% url 'booking' %}" class="text-white me-3">Booking</a></li>
+            <li class="nav-item"><a href="#" class="nav-link text-white">Contact</a></li>
+            <li class="nav-item"><a href="{% url 'reviews' %}" class="nav-link text-warning fw-bold">Reviews</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>Reliable & Affordable Airport Transfers</h1>
+    <p>
+      Unbeatable prices from Nottingham – Minibus up to 8 passengers &
+      luggage
+    </p>
+    <p>
+      <strong
+        >[Heathrow • Gatwick • Manchester • Birmingham •
+        Stansted]</strong
+      >
+    </p>
+    <a
+      href="https://wa.me/447xxxxxxxxx?text=Hi%20JoTravels!%20I%20want%20to%20book%20a%20cab."
+      class="btn whatsapp-btn mt-3"
+      target="_blank"
+    >
+      💬 Book Now on WhatsApp
+    </a>
+  </div>
+
+  <!-- Fleet Section -->
+  <div class="fleet-section">
+    <h2 class="fw-bold mb-4">Our Fleet & City Routes</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-3 mb-4">
+        <img
+          src="{% static 'images/jotravels1.png' %}"
+          class="fleet-img"
+          alt="Heathrow"
+        />
+        <div class="fleet-caption">Heathrow Airport</div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <img
+          src="{% static 'images/jotravels2.png' %}"
+          class="fleet-img"
+          alt="Gatwick"
+        />
+        <div class="fleet-caption">Gatwick Airport</div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <img
+          src="{% static 'images/jotravels3.png' %}"
+          class="fleet-img"
+          alt="Manchester"
+        />
+        <div class="fleet-caption">Manchester Airport</div>
+      </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-md-3 mb-4">
+        <img
+          src="{% static 'images/jotravels4.png' %}"
+          class="fleet-img"
+          alt="Birmingham"
+        />
+        <div class="fleet-caption">Birmingham Airport</div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <img
+          src="{% static 'images/jotravels5.png' %}"
+          class="fleet-img"
+          alt="Stansted"
+        />
+        <div class="fleet-caption">Stansted Airport</div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <img
+          src="{% static 'images/nottingham_city.jpeg' %}"
+          class="fleet-img"
+          alt="Nottingham"
+        />
+        <div class="fleet-caption">Nottingham City</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback -->
+  <div class="feedback-section">
+    <h2 class="fw-bold mb-4">What Our Customers Say</h2>
+    <marquee behavior="scroll" direction="left" scrollamount="6">
+      <span class="feedback">"Excellent service, very friendly driver!" ⭐⭐⭐⭐⭐</span>
+      <span class="feedback">"Affordable and always on time!" ⭐⭐⭐⭐⭐</span>
+      <span class="feedback">"Smooth journey to Heathrow, will book again!" ⭐⭐⭐⭐⭐</span>
+    </marquee>
+  </div>
+  <section class="text-center my-5">
+    <h3 class="mb-3">Have you travelled with us?</h3>
+    <p>We’d love to hear your feedback! Your review helps us improve and serve you better.</p>
+    <a href="{% url 'reviews' %}" class="btn btn-warning btn-lg">
+        ✍️ Leave a Review
+    </a>
+</section>
+
+
+  <footer>
+    <p>
+      © 2025 JoTravels UK – All rights reserved | Nottingham, United Kingdom
+    </p>
+  </footer>
+</body>
+</html>
