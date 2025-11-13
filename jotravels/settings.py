@@ -19,6 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ✅ Then load the .env file (or environment variables from Docker)
 load_dotenv(BASE_DIR / ".env")
 
+# Django error reporting
+ADMINS = [('Tejo', os.getenv('ADMIN_EMAIL'))]
+SERVER_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'server@jotravels.uk')
+EMAIL_SUBJECT_PREFIX = '[JOTRAVELS ERROR] '
+
+
 # ✅ Print for confirmation
 print("Loaded Email:", os.getenv('EMAIL_HOST_USER'))
 
@@ -26,6 +32,11 @@ print("Loaded Email:", os.getenv('EMAIL_HOST_USER'))
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-1234567890abcdefghijklmnop')
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://jotravels.uk',
+    'https://www.jotravels.uk'
+]
 
 
 # Application definition
