@@ -25,6 +25,9 @@ RUN pip install gunicorn whitenoise python-dotenv
 # 5️⃣ Copy project files into container
 # ==============================
 COPY . .
+# Copy .env into the container
+COPY .env .env
+
 
 # ==============================
 # 6️⃣ Run migrations + collect static files

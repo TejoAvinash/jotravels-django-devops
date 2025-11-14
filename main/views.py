@@ -25,7 +25,7 @@ def reviews(request):
             rating=rating
         )
 
-        # Send email to admin
+        # Send email to admin + client
         send_mail(
             subject=f"📝 New Customer Review from {name}",
             message=f"""
@@ -35,10 +35,13 @@ Rating: {rating}/5
 Message: {message}
 
 Please review and approve it in the admin panel:
-http://127.0.0.1:8000/admin/main/review/
+https://jotravels.uk/admin/main/review/
 """,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.ADMIN_EMAIL],
+            recipient_list=[
+                settings.EMAIL_HOST_USER,
+                settings.CLIENT_EMAIL
+            ],
             fail_silently=False,
         )
 
@@ -85,7 +88,7 @@ def booking(request):
             phone=phone
         )
 
-        # Send email to admin
+        # Send email to admin + client
         send_mail(
             subject=f"🚖 New Booking Request from {name}",
             message=f"""
@@ -98,14 +101,17 @@ Date & Time: {date_time}
 Phone: {phone}
 
 Approve this booking in admin panel:
-http://127.0.0.1:8000/admin/main/booking/
+https://jotravels.uk/admin/main/booking/
 """,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.ADMIN_EMAIL],
+            recipient_list=[
+                settings.EMAIL_HOST_USER,
+                settings.CLIENT_EMAIL
+            ],
             fail_silently=False,
         )
 
-        # ✅ WhatsApp integration
+        # WhatsApp integration
         whatsapp_message = (
             f"🚖 JoTravels UK Booking Request:%0A"
             f"Name: {name}%0A"
@@ -116,13 +122,9 @@ http://127.0.0.1:8000/admin/main/booking/
         )
         whatsapp_link = f"https://wa.me/{settings.WHATSAPP_NUMBER}?text={whatsapp_message}"
 
-
-
         return render(request, 'booking.html', {
             'success': True,
             'whatsapp_link': whatsapp_link
         })
 
     return render(request, 'booking.html')
-import os
-print("Loaded Email:", os.getenv('EMAIL_HOST_USER'))
