@@ -12,37 +12,36 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables
 load_dotenv(BASE_DIR / ".env")
 
-<<<<<<< HEAD
-=======
 # Django error reporting
 ADMINS = [('Tejo', os.getenv('ADMIN_EMAIL'))]
 SERVER_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'server@jotravels.uk')
 EMAIL_SUBJECT_PREFIX = '[JOTRAVELS ERROR] '
 
-
-# ✅ Print for confirmation
+# Debug print
+print("Loaded Email:", os.getenv('EMAIL_HOST_USER'))
 print("Loaded Email:", os.getenv('EMAIL_HOST_USER'))
 
-print("Loaded Email:", os.getenv('EMAIL_HOST_USER'))
->>>>>>> 43d5cc43aacae3c89a490785b49c68995f8d4749
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-1234567890abcdefghijklmnop')
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "13.50.111.107",
+    "jotravels.uk",
+    "www.jotravels.uk",
+]
 
-<<<<<<< HEAD
+
 # Client email (Yahoo)
 CLIENT_EMAIL = os.getenv('CLIENT_EMAIL')
-=======
+
 CSRF_TRUSTED_ORIGINS = [
     'https://jotravels.uk',
     'https://www.jotravels.uk'
 ]
 
-
 # Application definition
->>>>>>> 43d5cc43aacae3c89a490785b49c68995f8d4749
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
