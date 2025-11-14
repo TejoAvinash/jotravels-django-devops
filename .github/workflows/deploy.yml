@@ -2,8 +2,7 @@ name: Deploy JoTravels Django App
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -11,23 +10,29 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
+    # -----------------------------
+    # Copy project files to EC2
+    # -----------------------------
     - name: Copy files to EC2 using SSH
       uses: appleboy/scp-action@v0.1.4
       with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_KEY }}
-        source: "*"
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "."
         target: "~/jotravels-django-devops"
 
-    - name: SSH into EC2 and deploy Docker container
+    # -----------------------------
+    # Run docker build & restart container on EC2
+    # -----------------------------
+    - name: Run deployment commands on EC2
       uses: appleboy/ssh-action@v0.1.10
       with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_KEY }}
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/jotravels-django-devops
           sudo docker stop jotravels || true
