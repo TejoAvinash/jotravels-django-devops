@@ -19,13 +19,12 @@ def reviews(request):
         rating = request.POST.get('rating')
         email = request.POST.get('email')
 
-        new_review = Review.objects.create(
+        Review.objects.create(
             name=name,
             message=message,
             rating=rating
         )
 
-        # Send email to admin + client
         send_mail(
             subject=f"📝 New Customer Review from {name}",
             message=f"""
@@ -34,18 +33,13 @@ Name: {name}
 Rating: {rating}/5
 Message: {message}
 
-Please review and approve it in the admin panel:
+Please review it here:
 https://jotravels.uk/admin/main/review/
 """,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[
-                settings.EMAIL_HOST_USER,
-                settings.CLIENT_EMAIL
-            ],
-            fail_silently=False,
+            recipient_list=[settings.EMAIL_HOST_USER, settings.CLIENT_EMAIL],
         )
 
-        # Send thank-you email to customer
         if email:
             send_mail(
                 subject="🙏 Thank You for Your Review - JoTravels UK",
@@ -53,11 +47,10 @@ https://jotravels.uk/admin/main/review/
 Hi {name},
 
 Thank you for sharing your experience with JoTravels UK! 🚕
-We truly appreciate your feedback and hope to serve you again soon.
+We truly appreciate your feedback.
 
-Warm regards,  
-JoTravels UK Team  
-Nottingham, United Kingdom
+Warm regards,
+JoTravels UK Team
 """,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
@@ -66,12 +59,18 @@ Nottingham, United Kingdom
 
         return render(request, 'reviews.html', {'success': True})
 
-    reviews = Review.objects.filter(approved=True).order_by('-created_at')
-    return render(request, 'reviews.html', {'reviews': reviews})
+    reviews_list = Review.objects.filter(approved=True).order_by('-created_at')
+    return render(request, 'reviews.html', {'reviews': reviews_list})
 
 
 # ---------- Booking ----------
 def booking(request):
+
+    # Pass WhatsApp number always
+    context = {
+        "whatsapp_number": settings.WHATSAPP_NUMBER
+    }
+
     if request.method == "POST":
         name = request.POST.get('name')
         pickup = request.POST.get('pickup')
@@ -79,7 +78,6 @@ def booking(request):
         date_time = request.POST.get('date_time')
         phone = request.POST.get('phone')
 
-        # Save booking in DB
         Booking.objects.create(
             name=name,
             pickup=pickup,
@@ -88,7 +86,7 @@ def booking(request):
             phone=phone
         )
 
-        # Send email to admin + client
+        # Email admin + client
         send_mail(
             subject=f"🚖 New Booking Request from {name}",
             message=f"""
@@ -100,19 +98,15 @@ Drop: {drop}
 Date & Time: {date_time}
 Phone: {phone}
 
-Approve this booking in admin panel:
+Approve this booking:
 https://jotravels.uk/admin/main/booking/
 """,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[
-                settings.EMAIL_HOST_USER,
-                settings.CLIENT_EMAIL
-            ],
-            fail_silently=False,
+            recipient_list=[settings.EMAIL_HOST_USER, settings.CLIENT_EMAIL],
         )
 
-        # WhatsApp integration
-        whatsapp_message = (
+        # WhatsApp message
+        message = (
             f"🚖 JoTravels UK Booking Request:%0A"
             f"Name: {name}%0A"
             f"Pickup: {pickup}%0A"
@@ -120,11 +114,10 @@ https://jotravels.uk/admin/main/booking/
             f"Date & Time: {date_time}%0A"
             f"Phone: {phone}"
         )
-        whatsapp_link = f"https://wa.me/{settings.WHATSAPP_NUMBER}?text={whatsapp_message}"
 
-        return render(request, 'booking.html', {
-            'success': True,
-            'whatsapp_link': whatsapp_link
-        })
+        whatsapp_link = f"https://wa.me/{settings.WHATSAPP_NUMBER}?text={message}"
 
-    return render(request, 'booking.html')
+        context["success"] = True
+        context["whatsapp_link"] = whatsapp_link
+
+    return render(request, 'booking.html', context)

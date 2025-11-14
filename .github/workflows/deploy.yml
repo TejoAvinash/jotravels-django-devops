@@ -12,9 +12,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # -----------------------------
+    # ------------------------------------
     # Copy project files to EC2
-    # -----------------------------
+    # ------------------------------------
     - name: Copy files to EC2 using SSH
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -24,10 +24,10 @@ jobs:
         source: "."
         target: "~/jotravels-django-devops"
 
-    # -----------------------------
-    # Run docker build & restart container on EC2
-    # -----------------------------
-    - name: Run deployment commands on EC2
+    # ------------------------------------
+    # Run deploy.sh on EC2
+    # ------------------------------------
+    - name: Run deployment script on EC2
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -35,8 +35,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/jotravels-django-devops
-          sudo docker stop jotravels || true
-          sudo docker rm jotravels || true
-          sudo docker build -t jotravels .
-          sudo docker run -d -p 8000:8000 --env-file .env --name jotravels jotravels
-          sudo systemctl restart nginx
+          chmod +x deploy.sh
+          ./deploy.sh
