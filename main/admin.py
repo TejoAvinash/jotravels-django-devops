@@ -1,17 +1,25 @@
 from django.contrib import admin
 from .models import Booking, Review
+from django.utils.html import format_html
 
 # ----------------------------------
 # REVIEW ADMIN
 # ----------------------------------
+# REVIEW ADMIN
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("name", "rating", "message", "created_at", "approved")
+    list_display = ("name", "rating", "message", "created_at", "approved_badge")
     list_filter = ("approved", "rating", "created_at")
     search_fields = ("name", "message")
     ordering = ("-created_at",)
 
     actions = ["approve_reviews", "reject_reviews"]
+
+    @admin.display(description="Approved")
+    def approved_badge(self, obj):
+        if obj.approved:
+            return format_html('<span style="color: white; background: #28a745; padding: 3px 8px; border-radius: 4px;">Approved</span>')
+        return format_html('<span style="color: white; background: #dc3545; padding: 3px 8px; border-radius: 4px;">Pending</span>')
 
     @admin.action(description="Approve selected reviews")
     def approve_reviews(self, request, queryset):
@@ -22,10 +30,10 @@ class ReviewAdmin(admin.ModelAdmin):
         queryset.update(approved=False)
 
 
+
 # ----------------------------------
 # BOOKING ADMIN
 # ----------------------------------
-from django.utils.html import format_html
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
