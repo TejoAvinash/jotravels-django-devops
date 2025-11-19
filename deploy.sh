@@ -1,31 +1,34 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+set -e
 
-APP_DIR="$HOME/jotravels-django-devops"
+echo "🚀 JoTravels Deployment..."
 
-echo "🚀 [1] Go to app directory"
-cd "$APP_DIR"
+# 1) Go to app directory
+cd /home/ubuntu/jotravels-django-devops || exit
 
-echo "📥 [2] Pull latest code from GitHub"
-git fetch origin main
-git reset --hard origin/main
+# 2) Pull latest code
+echo "🔄 Pulling latest code from GitHub..."
+git pull origin main
 
-echo "🐳 [3] Stop old containers"
-docker compose down --remove-orphans || true
+# 3) Stop old container (if exists)
+echo "🛑 Stopping old container (if running)..."
+sudo docker stop jotravels || true
+sudo docker rm jotravels || true
 
-echo "🔨 [4] Build new image"
-docker compose build
+# 4) Build new image
+echo "🐳 Building new Docker image..."
+sudo docker build -t jotravels .
 
-echo "▶ [5] Start app with docker-compose"
-docker compose up -d
+# 5) Run new container
+echo "🚀 Starting new container..."
+sudo docker run -d \
+  --name jotravels \
+  --env-file .env \
+  -p 8000:8000 \
+  jotravels
 
-echo "🩺 [6] Health check"
-sleep 8
+# 6) Restart nginx
+echo "🔁 Restarting nginx..."
+sudo systemctl restart nginx
 
-if curl -fsS http://localhost:8000/ > /dev/null 2>&1; then
-  echo "✅ Deployment successful."
-else
-  echo "❌ FAILED – check logs"
-  docker compose logs --tail=50
-  exit 1
-fi
+echo "✅ Deployment completed successfully!"

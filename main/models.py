@@ -24,10 +24,9 @@ class Booking(models.Model):
     drop = models.CharField(max_length=200)
     date_time = models.DateTimeField()
     phone = models.CharField(max_length=20)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    approved = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name} - {self.pickup} to {self.drop}"
+
