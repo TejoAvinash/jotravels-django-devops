@@ -3,43 +3,61 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import Review, Booking
 
+
 # ---------- Home Page ----------
 def home(request):
     return render(request, 'home.html')
+
 
 # ---------- About Page ----------
 def about(request):
     return render(request, 'about.html')
 
+
 # ---------- Reviews ----------
 def reviews(request):
+
+    context = {
+        "whatsapp_number": settings.WHATSAPP_NUMBER
+    }
+
     if request.method == "POST":
         name = request.POST.get('name')
         message = request.POST.get('message')
         rating = request.POST.get('rating')
         email = request.POST.get('email')
 
+        # Save review in DB
         Review.objects.create(
             name=name,
             message=message,
             rating=rating
         )
 
+        # --------------------------
+        # SEND EMAIL #1: Admin Email
+        # --------------------------
         send_mail(
             subject=f"📝 New Customer Review from {name}",
             message=f"""
 New Review Submitted on JoTravels UK 🚕
+----------------------------------------
+
 Name: {name}
 Rating: {rating}/5
 Message: {message}
 
-Please review it here:
+Review Admin Panel:
 https://jotravels.uk/admin/main/review/
 """,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.EMAIL_HOST_USER, settings.CLIENT_EMAIL],
+            recipient_list=[settings.ADMIN_EMAIL],
+            fail_silently=False,
         )
 
+        # ------------------------------
+        # SEND EMAIL #2: Confirmation to customer
+        # ------------------------------
         if email:
             send_mail(
                 subject="🙏 Thank You for Your Review - JoTravels UK",
@@ -57,16 +75,20 @@ JoTravels UK Team
                 fail_silently=True,
             )
 
-        return render(request, 'reviews.html', {'success': True})
+        context["success"] = True
+        return render(request, 'reviews.html', context)
 
     reviews_list = Review.objects.filter(approved=True).order_by('-created_at')
-    return render(request, 'reviews.html', {'reviews': reviews_list})
+    context["reviews"] = reviews_list
+
+    return render(request, 'reviews.html', context)
+
 
 
 # ---------- Booking ----------
 def booking(request):
 
-    # Pass WhatsApp number always
+    # WhatsApp number always available in template
     context = {
         "whatsapp_number": settings.WHATSAPP_NUMBER
     }
@@ -78,6 +100,7 @@ def booking(request):
         date_time = request.POST.get('date_time')
         phone = request.POST.get('phone')
 
+        # Save booking in DB
         Booking.objects.create(
             name=name,
             pickup=pickup,
@@ -86,11 +109,14 @@ def booking(request):
             phone=phone
         )
 
-        # Email admin + client
+        # --------------------------
+        # SEND EMAIL #1: Admin Email
+        # --------------------------
         send_mail(
             subject=f"🚖 New Booking Request from {name}",
             message=f"""
 New booking request received!
+-------------------------------------
 
 Name: {name}
 Pickup: {pickup}
@@ -102,11 +128,14 @@ Approve this booking:
 https://jotravels.uk/admin/main/booking/
 """,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.EMAIL_HOST_USER, settings.CLIENT_EMAIL],
+            recipient_list=[settings.ADMIN_EMAIL],
+            fail_silently=False,
         )
 
-        # WhatsApp message
-        message = (
+        # --------------------------
+        # Build WhatsApp message URL
+        # --------------------------
+        whatsapp_message = (
             f"🚖 JoTravels UK Booking Request:%0A"
             f"Name: {name}%0A"
             f"Pickup: {pickup}%0A"
@@ -115,9 +144,11 @@ https://jotravels.uk/admin/main/booking/
             f"Phone: {phone}"
         )
 
-        whatsapp_link = f"https://wa.me/{settings.WHATSAPP_NUMBER}?text={message}"
+        whatsapp_link = f"https://wa.me/{settings.WHATSAPP_NUMBER}?text={whatsapp_message}"
 
         context["success"] = True
         context["whatsapp_link"] = whatsapp_link
+
+        return render(request, 'booking.html', context)
 
     return render(request, 'booking.html', context)
